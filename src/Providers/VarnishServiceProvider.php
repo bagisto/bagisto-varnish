@@ -14,7 +14,7 @@ class VarnishServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $router->pushMiddlewareToGroup('cacheable', \Webkul\Varnish\Http\Middleware\VarnishCache::class);
+        $router->aliasMiddleware('cacheable', \Webkul\Varnish\Http\Middleware\VarnishCache::class);
     }
 
     /**
