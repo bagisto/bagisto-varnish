@@ -1,0 +1,23 @@
+{
+    "name": "bagisto/bagisto-varnish",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Devansh Bawari",
+            "email": "devansh.bawari419@webkul.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Varnish\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Varnish\\Providers\\VarnishServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}
