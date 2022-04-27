@@ -11,15 +11,16 @@ class VarnishCache
      *
      * @param  mixed  $request
      * @param  Closure  $next
+     * @param  int   $cacheTimeInMinutes
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, int $cacheTimeInMinutes = 10080)
     {
         $response = $next($request);
 
         return $response->withHeaders([
             'X-Cacheable'   => 'YES',
-            'Cache-Control' => 'public, s-maxage=604800',
+            'Cache-Control' => 'public, s-maxage=' . 60 * $cacheTimeInMinutes,
         ]);
     }
 }
