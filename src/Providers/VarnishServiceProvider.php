@@ -15,6 +15,10 @@ class VarnishServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         $router->pushMiddlewareToGroup('cacheable', \Webkul\Varnish\Http\Middleware\VarnishCache::class);
+
+        $this->commands([
+            \Webkul\Varnish\Console\Commands\FlushVarnishCache::class,
+        ]);
     }
 
     /**
