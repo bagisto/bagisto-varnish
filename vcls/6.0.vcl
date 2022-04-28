@@ -183,7 +183,7 @@ sub vcl_miss {
 }
 
 sub vcl_backend_response {
-  if (beresp.http.X-Pass ~ "YES") {
+  if (beresp.http.X-Pass ~ "YES" || beresp.http.X-Ajax ~ "YES") {
     return (pass);
   }
 
