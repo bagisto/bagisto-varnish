@@ -124,6 +124,7 @@ sub vcl_recv {
     req.url ~ "/mini-cart" ||
     req.url ~ "/items-count" ||
     req.url ~ "/category-details" ||
+    req.url ~ "/comparison" ||
     req.url ~ "/checkout"
   ) {
     return (pass);
@@ -182,6 +183,10 @@ sub vcl_miss {
 }
 
 sub vcl_backend_response {
+  if (beresp.http.X-Pass ~ "YES") {
+    return (pass);
+  }
+
   if (beresp.http.X-Cacheable ~ "YES") {
     unset beresp.http.set-cookie;
     set beresp.do_esi = true;

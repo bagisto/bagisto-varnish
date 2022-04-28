@@ -18,9 +18,15 @@ class VarnishCache
     {
         $response = $next($request);
 
+        if ($request->ajax()) {
+            return $response->withHeaders([
+                'X-Pass' => 'Yes',
+            ]);
+        }
+
         return $response->withHeaders([
-            'X-Cacheable'   => 'YES',
             'Cache-Control' => 'public, s-maxage=' . 60 * $cacheTimeInMinutes,
+            'X-Cacheable'   => 'YES',
         ]);
     }
 }
