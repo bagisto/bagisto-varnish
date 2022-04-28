@@ -1,6 +1,8 @@
 # Bagisto Varnish
 
-Varnish setup for Bagisto E-commerce.
+Varnish setup for [Bagisto E-commerce](https://github.com/bagisto/bagisto).
+
+Note: This setup is only for [Bagisto E-commerce](https://github.com/bagisto/bagisto). If you want you can customize this as per your need.
 
 ## Requirements
 
