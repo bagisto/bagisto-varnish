@@ -20,7 +20,8 @@ class VarnishCache
 
         if ($request->ajax()) {
             return $response->withHeaders([
-                'X-Pass' => 'Yes',
+                'X-Cacheable' => 'YES',
+                'X-Pass'      => 'Yes',
             ]);
         }
 
