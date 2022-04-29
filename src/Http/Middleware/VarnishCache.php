@@ -16,11 +16,15 @@ class VarnishCache
      */
     public function handle($request, Closure $next, int $cacheTimeInMinutes = 10080)
     {
-        $response = $next($request);
-
-        return $response->withHeaders([
+        $headers = [
             'X-Cacheable'   => 'YES',
             'Cache-Control' => 'public, s-maxage=' . 60 * $cacheTimeInMinutes,
-        ]);
+        ];
+
+        if ($request->ajax()) {
+            $headers[] = ['X-Ajax' => 'Yes'];
+        }
+
+        return $next($request)->withHeaders($headers);
     }
 }
