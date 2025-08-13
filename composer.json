@@ -1,12 +1,16 @@
 {
     "name": "bagisto/bagisto-varnish",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Devansh Bawari",
-            "email": "devansh.bawari419@webkul.com"
-        }
+    "type": "library",
+    "description": "A Bagisto package that integrates Varnish Cache for enhanced performance with full-page caching and dynamic content handling.",
+    "keywords": [
+        "bagisto",
+        "varnish",
+        "laravel",
+        "framework",
+        "cache",
+        "full-page-cache"
     ],
+    "license": "MIT",    
     "autoload": {
         "psr-4": {
             "Webkul\\Varnish\\": "src/"
@@ -19,5 +23,6 @@
             ]
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

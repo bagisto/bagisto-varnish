@@ -33,7 +33,7 @@ class FlushVarnishCache extends Command
 
         $this->executeCommand([
             'varnishadm',
-            'ban req.url ~ ' . $url,
+            'ban req.url ~ '.$url,
         ]);
 
         $this->comment('The varnish cache has been flushed!');
@@ -41,9 +41,6 @@ class FlushVarnishCache extends Command
 
     /**
      * Execute command.
-     *
-     * @param  array  $command
-     * @return \Symfony\Component\Process\Process
      */
     protected function executeCommand(array $command): Process
     {

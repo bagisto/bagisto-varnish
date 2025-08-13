@@ -1,13 +1,12 @@
-# VCL version 5.0 is not supported so it should be 4.0 even though actually used Varnish version is 6
 vcl 4.0;
 
 import std;
-# The minimal Varnish version is 6.0
-# For SSL offloading, pass the following header in your proxy server or load balancer: 'X-SSL-Offloaded: https'
+# Requires Varnish version 6.0 or higher.
+# If you're using SSL offloading, ensure your proxy or load balancer sends this header: 'X-SSL-Offloaded: https'
 
 backend default {
-    .host = "127.0.0.1";
-    .port = "8080";
+    .host = {{ $backend_url }};
+    .port = {{ $backend_port }};
     .first_byte_timeout = 600s;
     .probe = {
         .timeout = 2s;
@@ -18,9 +17,9 @@ backend default {
 }
 
 acl purge {
- "localhost";
- "127.0.0.1";
- "::1";
+    @foreach ($access_list as $ip)
+        "{{ $ip }}";
+    @endforeach
 }
 
 sub vcl_recv {
@@ -32,18 +31,15 @@ sub vcl_recv {
         if (client.ip !~ purge) {
             return (synth(405, "Method not allowed"));
         }
-        # To use the X-Pool header for purging varnish during automated deployments, make sure the X-Pool header
-        # has been added to the response in your backend server config. This is used, for example, by the
-        # capistrano-bagisto gem for purging old content from varnish during it's deploy routine.
-        if (!req.http.X-Bagisto-Tags-Pattern && !req.http.X-Pool) {
-            return (synth(400, "X-Bagisto-Tags-Pattern or X-Pool header required"));
+
+        if (!req.http.X-Bagisto-Tags-Pattern) {
+            return (synth(400, "X-Bagisto-Tags-Pattern"));
         }
+
         if (req.http.X-Bagisto-Tags-Pattern) {
           ban("obj.http.X-Bagisto-Tags ~ " + req.http.X-Bagisto-Tags-Pattern);
         }
-        if (req.http.X-Pool) {
-          ban("obj.http.X-Pool ~ " + req.http.X-Pool);
-        }
+
         return (synth(200, "Purged"));
     }
 
@@ -55,7 +51,6 @@ sub vcl_recv {
         req.method != "OPTIONS" &&
         req.method != "PATCH" &&
         req.method != "DELETE") {
-          /* Non-RFC2616 or CONNECT which is weird. */
           return (pipe);
     }
 
@@ -69,13 +64,13 @@ sub vcl_recv {
         return (pass);
     }
 
-    # Bypass the API of products 
+    # Bypass the API of products
     if (req.url ~ "/api/products") {
-        return (hash);	
+        return (hash);
     }
 
     # Set initial grace period usage status
-    set req.http.grace = "3d";
+    set req.http.grace = {{ $grace_period }};
 
     # normalize url in case of leading HTTP scheme and domain
     set req.url = regsub(req.url, "^http[s]?://", "");
@@ -106,12 +101,6 @@ sub vcl_recv {
         return (pass);
     }
 
-    # Serve storage assets like images directly
-    if (req.url ~ "^/storage/") {
-        unset req.http.Cookie;
-        return (hash);
-    }
-
     return (hash);
 }
 
@@ -124,7 +113,6 @@ sub vcl_hash {
     if (req.http.X-SSL-Offloaded) {
         hash_data(req.http.X-SSL-Offloaded);
     }
-    /* {{ design_exceptions_code }} */
 
     if (req.url ~ "/graphql") {
         call process_graphql_headers;
@@ -233,21 +221,10 @@ sub vcl_deliver {
 
     # Not letting browser to cache non-static files.
     if (resp.http.Cache-Control !~ "private" && req.url !~ "^[^?]*\.(7z|avi|bz2|flac|flv|gz|mka|mkv|mov|mp3|mp4|mpeg|mpg|ogg|ogm|opus|rar|tar|tgz|tbz|txz|wav|webm|xz|zip)(\?.*)?$") {
-  #      set resp.http.Pragma = "no-cache";
- #       set resp.http.Expires = "-1";
-#        set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
+        # set resp.http.Pragma = "no-cache";
+        # set resp.http.Expires = "-1";
+        # set resp.http.Cache-Control = "no-store, no-cache, must-revalidate, max-age=0";
     }
-
-    if (!resp.http.X-Bagisto-Debug) {
-    #    unset resp.http.Age;
-    }
-#    unset resp.http.X-Bagisto-Debug;
- #   unset resp.http.X-Bagisto-Tags;
-#    unset resp.http.X-Powered-By;
-#    unset resp.http.Server;
-#    unset resp.http.X-Varnish;
- #   unset resp.http.Via;
-#    unset resp.http.Link;
 }
 
 sub vcl_hit {
