@@ -2,7 +2,7 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
-## **v2.0.0 (11th Aug, 2025) ** -
+## **v1.0.0 (17th of September, 2025)** - *Release*
 
 ### ✨ New Features
 
@@ -18,7 +18,3 @@ This changelog consists of the bug & security fixes and new features included in
 
 * Improved cache purging accuracy and stability.
 * Enhanced handling of dynamic views and cache headers for smoother user experience.
-
-## **v1.0.0 (27th of April, 2022)** - *Release*
-
-- First release.
