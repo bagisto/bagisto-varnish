@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'aliases' => [
-        'Varnish' => \Webkul\Varnish\Facades\VarnishCache::class,
-    ],
-
     'esi' => [
         'views' => [
             'customer-desktop-dropdown'       => 'varnish::shop.components.layouts.header.desktop.customer-dropdown',

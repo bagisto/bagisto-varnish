@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Webkul\Varnish\Services\VarnishCache;
-use Webkul\Varnish\Services\VarnishClient;
-use Webkul\Varnish\Contracts\VarnishCacheInterface;
-use Webkul\Varnish\Contracts\VarnishClientInterface;
 use Webkul\Core\Http\Middleware\PreventRequestsDuringMaintenance;
 use Webkul\Varnish\Http\Middleware\VarnishCache as VarnishCacheMiddleware;
 
@@ -40,7 +36,7 @@ class VarnishServiceProvider extends ServiceProvider
         $this->commands([
             \Webkul\Varnish\Console\Commands\FlushVarnishCache::class,
         ]);
-        
+
         $router->aliasMiddleware('cache.response', VarnishCacheMiddleware::class);
         Route::middleware(['web', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/web.php');
         Route::middleware(['web', 'shop', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/shop/web.php');
@@ -53,28 +49,9 @@ class VarnishServiceProvider extends ServiceProvider
 
         $this->loadPublishers();
 
-        $this->app->singleton(VarnishCacheInterface::class, VarnishCache::class);
-
-        $this->app->singleton('varnishcache', function ($app) {
-            return $app->make(VarnishCacheInterface::class);
-        });
-
-        $this->app->singleton(VarnishClientInterface::class, VarnishClient::class);
-
-        $this->app->singleton('VarnishClient', function ($app) {
-            return $app->make(VarnishClientInterface::class);
-        });
-
-        $aliases = config('varnish.aliases', []);
-        foreach ($aliases as $alias => $class) {
-            if (! class_exists($alias)) {
-                \Illuminate\Foundation\AliasLoader::getInstance()->alias($alias, $class);
-            }
-        }
-
         $this->app->register(EventServiceProvider::class);
 
-        Event::listen('bagisto.shop.layout.body.before', function($viewRenderEventManager) {
+        Event::listen('bagisto.shop.layout.body.before', function ($viewRenderEventManager) {
             $viewRenderEventManager->addTemplate('varnish::shop.view-render-events.customer-status');
         });
     }
@@ -89,9 +66,7 @@ class VarnishServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
-            __DIR__.'/../Resources/views/shop/components/layouts/header/desktop/bottom.blade.php' => resource_path('themes/default/views/components/layouts/header/desktop/bottom.blade.php'),
-            __DIR__.'/../Resources/views/shop/components/layouts/header/mobile/index.blade.php'   => resource_path('themes/default/views/components/layouts/header/mobile/index.blade.php'),
-            __DIR__.'/../Resources/views/shop/components/products/card.blade.php'                 => resource_path('themes/default/views/components/products/card.blade.php'),
+            __DIR__.'/../../publishables/views/shop' => resource_path('themes/default/views'),
         ]);
     }
 }
