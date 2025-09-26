@@ -1,12 +1,17 @@
-<v-dynamic-view {{ $attributes }} > </v-dynamic-view>
+<v-dynamic-view {{ $attributes }}></v-dynamic-view>
 
 @pushOnce('scripts')
     <script
         type="text/x-template"
         id="v-dynamic-view-template"
     >
-        <div v-html="htmlContent" v-if="htmlContent"></div>
+        <div 
+            v-html="htmlContent" 
+            v-if="htmlContent"
+        >
+        </div>
     </script>
+
     <script type="module">
         app.component('v-dynamic-view', {
             template: '#v-dynamic-view-template',
@@ -67,8 +72,8 @@
 
                         this.htmlContent = '<p>Unable to load content. Please try again later.</p>';
                     });
-                }
-            }
+                },
+            },
         });
     </script>
 @endPushOnce

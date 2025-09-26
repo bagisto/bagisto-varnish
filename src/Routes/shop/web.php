@@ -7,6 +7,7 @@ Route::get('/esi', [EsiController::class, 'loadView'])->name('varnish.esi.load')
 
 Route::get('/flashes', function () {
     $types = ['success', 'warning', 'error', 'info'];
+    
     $flashes = [];
 
     foreach ($types as $type) {

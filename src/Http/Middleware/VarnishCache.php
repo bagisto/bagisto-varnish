@@ -16,7 +16,6 @@ class VarnishCache
      */
     public function handle($request, Closure $next, int $cacheTimeInMinutes = 10080)
     {
-
         $response = $next($request);
 
         $tags = $this->generateBagistoTags($request, $response);

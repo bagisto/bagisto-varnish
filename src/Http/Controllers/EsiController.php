@@ -12,7 +12,7 @@ class EsiController extends Controller
     {
         $tag = $request->query('tag');
 
-        $esiTags = Config::get('varnish.esi');
+        $esiTags = Config::get('varnish.esi.views');
 
         if (! array_key_exists($tag, $esiTags)) {
             abort(404, 'Invalid ESI tag.');
