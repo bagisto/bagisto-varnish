@@ -2,7 +2,7 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
-## **v1.1.0 (29th of September, 2025)** - *Release*
+## **v1.1.0 (30th of September, 2025)** - *Release*
 
 * Compatibility with the Bagisto v2.3.7.
 
