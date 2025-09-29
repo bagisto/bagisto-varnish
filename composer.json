@@ -16,13 +16,6 @@
             "Webkul\\Varnish\\": "src/"
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Webkul\\Varnish\\Providers\\VarnishServiceProvider"
-            ]
-        }
-    },
     "minimum-stability": "stable",
     "prefer-stable": true
 }

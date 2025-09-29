@@ -4,8 +4,14 @@ namespace Webkul\Varnish\Services;
 
 class VarnishClient
 {
+    /**
+     * The Varnish server URL.
+     */
     protected string $varnishServerUrl;
 
+    /**
+     * Create a new service instance.
+     */
     public function setVarnishServerUrl(string $varnishServerUrl): void
     {
         $this->varnishServerUrl = $varnishServerUrl;

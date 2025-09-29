@@ -17,13 +17,13 @@ class VclController extends Controller
     public function exportVcl()
     {
         $data = [
-            'access_list'         => array_map('trim', explode(',', core()->getConfigData('fpc.configuration.fpc.varnish_access_list') ?? 'localhost,127.0.0.1,::1')),
-            'backend_url'         => core()->getConfigData('fpc.configuration.fpc.varnish_backend_url') ?? 'localhost',
-            'backend_port'        => core()->getConfigData('fpc.configuration.fpc.varnish_backend_port') ?? '8080',
-            'grace_period'        => core()->getConfigData('fpc.configuration.fpc.varnish_grace_period') ?? '3d',
+            'access_list'  => array_map('trim', explode(',', core()->getConfigData('fpc.configuration.fpc.varnish_access_list') ?? 'localhost,127.0.0.1,::1')),
+            'backend_url'  => core()->getConfigData('fpc.configuration.fpc.varnish_backend_url') ?? 'localhost',
+            'backend_port' => core()->getConfigData('fpc.configuration.fpc.varnish_backend_port') ?? '8080',
+            'grace_period' => core()->getConfigData('fpc.configuration.fpc.varnish_grace_period') ?? '3d',
         ];
 
-        $vclContent = view('varnish::vcls.default', $data)->render();
+        $vclContent = view('varnish::admin.vcls.default', $data)->render();
 
         return Response::make($vclContent, 200, [
             'Content-Type'        => 'text/plain',
@@ -77,7 +77,6 @@ class VclController extends Controller
                     ])
                 );
             }
-
         } catch (\Exception $e) {
             session()->flash(
                 'error',
@@ -90,6 +89,11 @@ class VclController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Purge the entire cache via AJAX request.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function purgeFullCache(Request $request)
     {
         try {
@@ -123,7 +127,6 @@ class VclController extends Controller
                     ])
                 );
             }
-
         } catch (\Exception $e) {
             session()->flash(
                 'error',

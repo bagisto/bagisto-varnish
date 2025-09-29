@@ -2,6 +2,7 @@
 @php
     $showWishlist = (bool) core()->getConfigData('customer.settings.wishlist.wishlist_option');
 @endphp
+
 @guest('customer')
     <div class="grid gap-2.5">
         <p class="font-dmserif text-xl">
@@ -80,7 +81,7 @@
             </a>
         @endif
 
-        <!--Customers logout-->
+        <!-- Customers Logout -->
        @auth('customer')
             <form
                 method="POST"
@@ -98,6 +99,7 @@
                 </button>
             </form>
         @endauth
+        
         {!! view_render_event('bagisto.shop.components.layouts.header.mobile.index.profile_dropdown.links.after') !!}
     </div>
 @endauth

@@ -3,8 +3,7 @@
 namespace Webkul\Varnish\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
-use Webkul\Varnish\Facades\VarnishCache as FacadesVarnishCache;
+use Webkul\Varnish\Facades\VarnishCache as VarnishCacheFacade;
 
 class VarnishCache
 {
@@ -16,10 +15,10 @@ class VarnishCache
      */
     public function handle($request, Closure $next, int $cacheTimeInMinutes = 10080)
     {
-
         $response = $next($request);
 
         $tags = $this->generateBagistoTags($request, $response);
+
         if ($tags) {
             $response->headers->set('X-Bagisto-Tags', $tags);
         }
@@ -34,14 +33,22 @@ class VarnishCache
         return $response;
     }
 
+    /**
+     * Generate bagisto tags.
+     *
+     * @param  mixed  $request
+     * @param  mixed  $response
+     * @return string
+     */
     protected function generateBagistoTags($request, $response)
     {
-        $tags = FacadesVarnishCache::getCacheTags($request);
+        $tags = VarnishCacheFacade::getCacheTags($request);
 
         if ($response->headers->has('X-Bagisto-Tag')) {
             $responseTags = explode(',', $response->headers->get('X-Bagisto-Tag'));
+
             foreach ($responseTags as $tag) {
-                $tags[] = FacadesVarnishCache::getSufix().trim($tag);
+                $tags[] = VarnishCacheFacade::getSufix().trim($tag);
             }
         }
 

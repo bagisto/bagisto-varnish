@@ -68,7 +68,6 @@
 
                         <!-- This user profile block needs to be dynamic for FPC, and since ESI does not work with components, custom logic has been implemented. -->
                         <x-slot:content>
-                            {{-- <esi:include src="/esi?tag=customer-mobile-md-dropdown" /> --}}
                             <x-varnish::dynamic-view view="customer-mobile-md-dropdown"></x-varnish::dynamic-view>
                         </x-slot:content>
 
@@ -77,7 +76,6 @@
 
                 <!-- For Medium and small screen -->
                 <div class="md:hidden">
-                    {{-- <esi:include src="/esi?tag=customer-mobile-sm-dropdown" /> --}}
                     <x-varnish::dynamic-view view="customer-mobile-sm-dropdown"></x-varnish::dynamic-view>
                 </div>
             </div>
@@ -150,7 +148,7 @@
                                 class="h-[60px] w-[60px] rounded-full max-md:rounded-full"
                             >
                         </div>
-                        <!-- <esi:include src="/esi?tag=customer-account-profile-drawer" /> -->
+                        
                         <x-varnish::dynamic-view view="customer-account-profile-drawer"></x-varnish::dynamic-view>
                     </div>
                 </div>

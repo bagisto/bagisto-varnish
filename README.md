@@ -21,7 +21,6 @@ This package integrates **Varnish Cache** with Bagisto to boost site performance
 
 <img width="1536" height="474" alt="image" src="https://github.com/user-attachments/assets/c0f2186d-6f73-47d8-a26e-c6f49cafa983" />
 
-
 **Explanation**:
 
 * **443 (HTTPS)** → **Nginx** handles SSL termination and forwards traffic.
@@ -43,7 +42,9 @@ composer require bagisto/bagisto-varnish
 
 ### 2. Register the Service Provider
 
-In `config/app.php`:
+In `bootstrap/providers.php`:
+
+> **Note:** Autoloading via Composer’s package auto-discovery is **not possible** for this provider. The registry order matters—`VarnishServiceProvider` must be listed **after** the Shop package or at the end of the providers array. Auto-discovery would load it too early, which can cause issues.
 
 ```php
 'providers' => [
@@ -55,16 +56,6 @@ In `config/app.php`:
 
 ```bash
 php artisan vendor:publish --provider="Webkul\Varnish\Providers\VarnishServiceProvider"
-```
-
-### 4. Configure `config/varnish.php`
-
-```php
-return [
-    'aliases' => [
-        'Varnish' => \Webkul\Varnish\Facades\VarnishCache::class,
-    ],
-];
 ```
 
 ---
@@ -95,11 +86,19 @@ You can integrate dynamic content in **two ways**:
 
 ### **1 – Define Dynamic Views / Fragments**
 
-In `config/esi_views.php`, define a **key** (identifier) and its corresponding **Blade view path**:
+In `config/varnish.php`, define a **key** (identifier) and its corresponding **Blade view path**:
 
 ```php
 return [
-    'customer-desktop-dropdown' => 'varnish::shop.components.layouts.header.desktop.customer-dropdown',
+    'esi' => [
+        'views' => [
+            ...
+
+            'customer-desktop-dropdown' => 'varnish::shop.components.layouts.header.desktop.customer-dropdown',
+
+            ...
+        ]
+    ],
 ];
 ```
 

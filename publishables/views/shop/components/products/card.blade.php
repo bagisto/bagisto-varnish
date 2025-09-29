@@ -341,7 +341,6 @@
             props: ['mode', 'product'],
 
             data() {
-                
                 return {
                     isCustomer: document.getElementById('isCustomerFlag')?.innerText?.trim() === '1',
 
