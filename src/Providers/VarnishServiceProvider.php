@@ -36,7 +36,7 @@ class VarnishServiceProvider extends ServiceProvider
         $this->commands([
             \Webkul\Varnish\Console\Commands\FlushVarnishCache::class,
         ]);
-
+        
         $router->aliasMiddleware('cache.response', VarnishCacheMiddleware::class);
         Route::middleware(['web', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/web.php');
         Route::middleware(['web', 'shop', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/shop/web.php');

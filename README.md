@@ -43,7 +43,9 @@ composer require bagisto/bagisto-varnish
 
 ### 2. Register the Service Provider
 
-In `config/app.php`:
+In `bootstrap/providers.php`:
+
+> **Note:** Autoloading via Composer’s package auto-discovery is **not possible** for this provider. The registry order matters—`VarnishServiceProvider` must be listed **after** the Shop package or at the end of the providers array. Auto-discovery would load it too early, which can cause issues.
 
 ```php
 'providers' => [
