@@ -21,7 +21,6 @@ This package integrates **Varnish Cache** with Bagisto to boost site performance
 
 <img width="1536" height="474" alt="image" src="https://github.com/user-attachments/assets/c0f2186d-6f73-47d8-a26e-c6f49cafa983" />
 
-
 **Explanation**:
 
 * **443 (HTTPS)** → **Nginx** handles SSL termination and forwards traffic.
@@ -87,11 +86,19 @@ You can integrate dynamic content in **two ways**:
 
 ### **1 – Define Dynamic Views / Fragments**
 
-In `config/esi_views.php`, define a **key** (identifier) and its corresponding **Blade view path**:
+In `config/varnish.php`, define a **key** (identifier) and its corresponding **Blade view path**:
 
 ```php
 return [
-    'customer-desktop-dropdown' => 'varnish::shop.components.layouts.header.desktop.customer-dropdown',
+    'esi' => [
+        'views' => [
+            ...
+
+            'customer-desktop-dropdown' => 'varnish::shop.components.layouts.header.desktop.customer-dropdown',
+
+            ...
+        ]
+    ],
 ];
 ```
 
