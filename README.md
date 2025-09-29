@@ -59,16 +59,6 @@ In `bootstrap/providers.php`:
 php artisan vendor:publish --provider="Webkul\Varnish\Providers\VarnishServiceProvider"
 ```
 
-### 4. Configure `config/varnish.php`
-
-```php
-return [
-    'aliases' => [
-        'Varnish' => \Webkul\Varnish\Facades\VarnishCache::class,
-    ],
-];
-```
-
 ---
 
 ## ⚙️ Varnish Server Configuration

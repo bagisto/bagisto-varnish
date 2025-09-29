@@ -8,6 +8,11 @@ use Webkul\Admin\Http\Controllers\Controller;
 
 class EsiController extends Controller
 {
+    /**
+     * Load the view associated with the given ESI tag.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function loadView(Request $request)
     {
         $tag = $request->query('tag');

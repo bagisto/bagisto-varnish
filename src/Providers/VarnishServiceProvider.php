@@ -36,14 +36,14 @@ class VarnishServiceProvider extends ServiceProvider
         $this->commands([
             \Webkul\Varnish\Console\Commands\FlushVarnishCache::class,
         ]);
-        
+
         $router->aliasMiddleware('cache.response', VarnishCacheMiddleware::class);
-        Route::middleware(['web', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/web.php');
+        Route::middleware(['web', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/admin/web.php');
         Route::middleware(['web', 'shop', PreventRequestsDuringMaintenance::class])->group(__DIR__.'/../Routes/shop/web.php');
 
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'varnish');
 
-        Blade::anonymousComponentPath(__DIR__.'/../Resources/views/components', 'varnish-esi');
+        Blade::anonymousComponentPath(__DIR__.'/../Resources/views/shop/components', 'varnish');
 
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'varnish');
 

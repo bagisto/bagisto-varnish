@@ -4,6 +4,11 @@ namespace Webkul\Varnish\Services;
 
 class VarnishCache
 {
+    /**
+     * Create a new service instance.
+     *
+     * @return void
+     */
     public function __construct(private VarnishClient $client)
     {
         $this->client->setVarnishServerUrl(core()->getConfigData('fpc.configuration.fpc.varnish_backend_url') ?? 'http://127.0.0.1');
@@ -33,16 +38,25 @@ class VarnishCache
         return $tags;
     }
 
+    /**
+     * Get the prefix for the cache keys.
+     */
     public function getPrefix()
     {
         return 'bagisto-';
     }
 
+    /**
+     * Get the sufix for the cache keys.
+     */
     public function getSufix()
     {
         return '-'.core()->getCurrentChannel()->code.'-'.core()->getCurrentLocale()->code.'-'.core()->getCurrentCurrency()->code;
     }
 
+    /**
+     * Remove the given URIs from the cache.
+     */
     public function forget(string|array $uris, array $tags = []): array
     {
         $uris = is_array($uris) ? $uris : func_get_args();
@@ -73,6 +87,9 @@ class VarnishCache
         return $results;
     }
 
+    /**
+     * Get the full URI for the given path.
+     */
     public function getUri(string $uri): string
     {
         if ($uri === '.') {
