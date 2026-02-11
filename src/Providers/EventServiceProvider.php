@@ -36,10 +36,6 @@ class EventServiceProvider extends ServiceProvider
             'Webkul\Varnish\Listeners\Review@beforeDelete',
         ],
 
-        'checkout.order.save.after'     => [
-            'Webkul\Varnish\Listeners\Order@afterCancelOrCreate',
-        ],
-
         'sales.order.cancel.after'      => [
             'Webkul\Varnish\Listeners\Order@afterCancelOrCreate',
         ],
