@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Core\Http\Middleware\PreventRequestsDuringMaintenance;
+use Webkul\Varnish\Console\Commands\FlushVarnishCache;
 use Webkul\Varnish\Http\Middleware\VarnishCache as VarnishCacheMiddleware;
 
 class VarnishServiceProvider extends ServiceProvider
@@ -34,7 +35,7 @@ class VarnishServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         $this->commands([
-            \Webkul\Varnish\Console\Commands\FlushVarnishCache::class,
+            FlushVarnishCache::class,
         ]);
 
         $router->aliasMiddleware('cache.response', VarnishCacheMiddleware::class);

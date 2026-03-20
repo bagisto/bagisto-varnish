@@ -2,6 +2,22 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
+## **v2.0.0 (20th of March, 2025)** - *Release*
+
+* Compatibility with Bagisto v2.4.
+
+* Moved configuration panel under **Cache Management → Varnish** section.
+
+* Renamed configuration key from `fpc` to `varnish` for consistency.
+
+* Auto-registers `cache_management` parent section for Bagisto v2.4.0 where it is not available in core.
+
+* Fixed route pattern for `shop.product_or_category.index` to match Bagisto v2.4 signature.
+
+* Synced published shop views with Bagisto v2.4 (localStorage category caching, srcset attributes, wishlist variable).
+
+* Fixed all translation keys across blade views and controllers.
+
 ## **v1.1.0 (30th of September, 2025)** - *Release*
 
 * Compatibility with the Bagisto v2.3.7.

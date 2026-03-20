@@ -19,12 +19,17 @@
 
                 <!-- Product Image -->
                 <a
-                    :href="`{{ route('shop.product_or_category.index', '') }}/${product.url_key}`"
+                    :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)"
                     :aria-label="product.name + ' '"
                 >
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative bg-zinc-100 transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
                         ::src="product.base_image.medium_image_url"
+                        ::srcset="`
+                            ${product.base_image.small_image_url} 150w,
+                            ${product.base_image.medium_image_url} 300w,
+                        `"
+                        sizes="(max-width: 768px) 150px, (max-width: 1200px) 300px, 600px"
                         ::key="product.id"
                         ::index="product.id"
                         width="291"
@@ -193,7 +198,7 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.image.before') !!}
 
-                <a :href="`{{ route('shop.product_or_category.index', '') }}/${product.url_key}`">
+                <a :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)">
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative min-w-[250px] bg-zinc-100 transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
                         ::src="product.base_image.medium_image_url"

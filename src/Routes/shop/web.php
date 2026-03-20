@@ -13,7 +13,7 @@ Route::get('/flashes', function () {
     foreach ($types as $type) {
         if (session()->has($type)) {
             $flashes[] = [
-                'type'    => $type,
+                'type' => $type,
                 'message' => session($type),
             ];
         }

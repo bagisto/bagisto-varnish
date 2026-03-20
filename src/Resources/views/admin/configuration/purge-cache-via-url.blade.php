@@ -9,7 +9,7 @@
                         
             <x-admin::form.control-group>
                 <x-admin::form.control-group.label class="required">
-                    @lang('varnish::app.configuration.fpc.cache_management.purge_cache.via_url.title')
+                    @lang('varnish::app.configuration.varnish.purge_cache.via_url.title')
                 </x-admin::form.control-group.label>
 
                 <x-admin::form.control-group.control
@@ -18,12 +18,12 @@
                     rules="required"
                     :value="old('purge_url')"
                     :label="trans('admin::app.account.edit.name')"
-                    :placeholder="trans('varnish::app.configuration.fpc.cache_management.purge_cache.via_url.placeholder')"
+                    :placeholder="trans('varnish::app.configuration.varnish.purge_cache.via_url.placeholder')"
                 />
 
                 <x-admin::form.control-group.error control-name="purge_url" />
                 <p class="mt-2 block text-xs italic leading-5 text-gray-600 dark:text-gray-300">
-                    @lang('varnish::app.configuration.fpc.cache_management.purge_cache.via_url.info')
+                    @lang('varnish::app.configuration.varnish.purge_cache.via_url.info')
                 </p>
             </x-admin::form.control-group>
 
@@ -32,7 +32,7 @@
                     type="button"
                     class="primary-button"                      
                     @click.prevent="$emitter.emit('open-confirm-modal', {
-                        message: '@lang('varnish::app.configuration.fpc.cache_management.purge_cache.via_url.confirmation')',
+                        message: '@lang('varnish::app.configuration.varnish.purge_cache.via_url.confirmation')',
                         agree: () => {
                             const form = $refs['purge-via-url'];
                             if (form.checkValidity()) {
@@ -43,7 +43,7 @@
                         }
                     })"
                 >
-                    @lang('varnish::app.configuration.fpc.cache_management.purge_cache.via_url.btn')
+                    @lang('varnish::app.configuration.varnish.purge_cache.via_url.btn')
                 </button>
             </div>
         </form>

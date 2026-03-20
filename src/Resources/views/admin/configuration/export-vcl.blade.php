@@ -9,11 +9,11 @@
         >
             <span class="icon-admin-export text-xl text-gray-600"></span>
 
-            @lang('varnish::app.configuration.fpc.configuration.fpc.cache_application.varnish.export_vcl.title')
+            @lang('varnish::app.configuration.varnish.configuration.cache_application.varnish.export_vcl.title')
         </a>
     </div>
 
     <p class="mt-2 block text-xs italic leading-5 text-gray-600 dark:text-gray-300">
-        @lang('varnish::app.configuration.fpc.configuration.fpc.cache_application.varnish.export_vcl.info')
+        @lang('varnish::app.configuration.varnish.configuration.cache_application.varnish.export_vcl.info')
     </p>
 </div>

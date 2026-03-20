@@ -165,7 +165,7 @@ Route::get('/', [HomeController::class, 'index'])
 
 ## 🛠 UI Configuration (Export VCL)
 
-Navigate to: **Admin → Configuration → Full Page Cache → Configuration**
+Navigate to: **Admin → Configuration → Cache Management → Varnish → Configuration**
 
 Select **Varnish** as the cache application, then provide the following:
 
@@ -179,7 +179,7 @@ Select **Varnish** as the cache application, then provide the following:
 
 ## 🛠 Cache Management
 
-Navigate to: **Admin → Configuration → Full Page Cache → Cache Management**
+Navigate to: **Admin → Configuration → Cache Management → Varnish → Purge Cache**
 
 1. **Purge by URLs** – Enter full URLs (comma-separated) to clear specific cache entries. Paths and domains must match exactly.
 2. **Purge Everything** – Clears **all** cache entries from Varnish. Use with caution, as it may temporarily affect performance.

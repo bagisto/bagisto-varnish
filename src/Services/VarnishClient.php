@@ -2,6 +2,9 @@
 
 namespace Webkul\Varnish\Services;
 
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
+
 class VarnishClient
 {
     /**
@@ -20,11 +23,11 @@ class VarnishClient
     /**
      * Send an HTTP request to the Varnish server.
      *
-     * @return \Illuminate\Http\Client\Response
+     * @return Response
      */
     public function sendRequest(string $method, string $uri, array $options = [])
     {
-        return \Illuminate\Support\Facades\Http::withOptions(['http_errors' => false])
+        return Http::withOptions(['http_errors' => false])
             ->withHeaders([
                 'X-Bagisto-Tags-Pattern' => $uri,
             ])
@@ -34,7 +37,7 @@ class VarnishClient
     /**
      * Purge a specific URI from Varnish cache.
      *
-     * @return \Illuminate\Http\Client\Response
+     * @return Response
      */
     public function purge(string $uri)
     {

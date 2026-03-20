@@ -17,16 +17,16 @@ class VclController extends Controller
     public function exportVcl()
     {
         $data = [
-            'access_list'  => array_map('trim', explode(',', core()->getConfigData('fpc.configuration.fpc.varnish_access_list') ?? 'localhost,127.0.0.1,::1')),
-            'backend_url'  => core()->getConfigData('fpc.configuration.fpc.varnish_backend_url') ?? 'localhost',
-            'backend_port' => core()->getConfigData('fpc.configuration.fpc.varnish_backend_port') ?? '8080',
-            'grace_period' => core()->getConfigData('fpc.configuration.fpc.varnish_grace_period') ?? '3d',
+            'access_list' => array_map('trim', explode(',', core()->getConfigData('cache_management.varnish.configuration.varnish_access_list') ?? 'localhost,127.0.0.1,::1')),
+            'backend_url' => core()->getConfigData('cache_management.varnish.configuration.varnish_backend_url') ?? 'localhost',
+            'backend_port' => core()->getConfigData('cache_management.varnish.configuration.varnish_backend_port') ?? '8080',
+            'grace_period' => core()->getConfigData('cache_management.varnish.configuration.varnish_grace_period') ?? '3d',
         ];
 
         $vclContent = view('varnish::admin.vcls.default', $data)->render();
 
         return Response::make($vclContent, 200, [
-            'Content-Type'        => 'text/plain',
+            'Content-Type' => 'text/plain',
             'Content-Disposition' => 'attachment; filename="default.vcl"',
         ]);
     }
@@ -41,7 +41,7 @@ class VclController extends Controller
         $url = $request->input('purge_url');
 
         if (empty($url)) {
-            session()->flash('error', trans('varnish::app.configuration.fpc.cache_management.purge_cache.url_required'));
+            session()->flash('error', trans('varnish::app.configuration.varnish.purge_cache.url_required'));
 
             return redirect()->back();
         }
@@ -63,7 +63,7 @@ class VclController extends Controller
             if (count($successUrls)) {
                 session()->flash(
                     'success',
-                    trans('varnish::app.configuration.fpc.cache_management.purge_cache.success', [
+                    trans('varnish::app.configuration.varnish.purge_cache.success', [
                         'urls' => implode(', ', $successUrls),
                     ])
                 );
@@ -72,7 +72,7 @@ class VclController extends Controller
             if (count($failedUrls)) {
                 session()->flash(
                     'error',
-                    trans('varnish::app.configuration.fpc.cache_management.purge_cache.failure', [
+                    trans('varnish::app.configuration.varnish.purge_cache.failure', [
                         'urls' => implode(', ', $failedUrls),
                     ])
                 );
@@ -80,7 +80,7 @@ class VclController extends Controller
         } catch (\Exception $e) {
             session()->flash(
                 'error',
-                trans('varnish::app.configuration.fpc.cache_management.purge_cache.exception', [
+                trans('varnish::app.configuration.varnish.purge_cache.exception', [
                     'message' => $e->getMessage(),
                 ])
             );
@@ -105,9 +105,9 @@ class VclController extends Controller
             if (is_array($result)) {
                 foreach ($result as $res) {
                     if (! empty($res['success'])) {
-                        $successUrls[] = $res['url'] ?? trans('varnish::app.configuration.fpc.cache_management.purge_cache.unknown_url');
+                        $successUrls[] = $res['url'] ?? trans('varnish::app.configuration.varnish.purge_cache.unknown_url');
                     } else {
-                        $failedUrls[] = $res['url'] ?? trans('varnish::app.configuration.fpc.cache_management.purge_cache.unknown_url');
+                        $failedUrls[] = $res['url'] ?? trans('varnish::app.configuration.varnish.purge_cache.unknown_url');
                     }
                 }
             }
@@ -115,14 +115,14 @@ class VclController extends Controller
             if (count($successUrls)) {
                 session()->flash(
                     'success',
-                    trans('varnish::app.configuration.fpc.cache_management.purge_cache.all_success')
+                    trans('varnish::app.configuration.varnish.purge_cache.all_success')
                 );
             }
 
             if (count($failedUrls)) {
                 session()->flash(
                     'error',
-                    trans('varnish::app.configuration.fpc.cache_management.purge_cache.partial_failure', [
+                    trans('varnish::app.configuration.varnish.purge_cache.partial_failure', [
                         'urls' => implode(', ', $failedUrls),
                     ])
                 );
@@ -130,7 +130,7 @@ class VclController extends Controller
         } catch (\Exception $e) {
             session()->flash(
                 'error',
-                trans('varnish::app.configuration.fpc.cache_management.purge_cache.exception', [
+                trans('varnish::app.configuration.varnish.purge_cache.exception', [
                     'message' => $e->getMessage(),
                 ])
             );

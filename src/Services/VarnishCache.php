@@ -2,6 +2,8 @@
 
 namespace Webkul\Varnish\Services;
 
+use Illuminate\Http\Request;
+
 class VarnishCache
 {
     /**
@@ -11,13 +13,13 @@ class VarnishCache
      */
     public function __construct(private VarnishClient $client)
     {
-        $this->client->setVarnishServerUrl(core()->getConfigData('fpc.configuration.fpc.varnish_backend_url') ?? 'http://127.0.0.1');
+        $this->client->setVarnishServerUrl(core()->getConfigData('cache_management.varnish.configuration.varnish_backend_url') ?? 'http://127.0.0.1');
     }
 
     /**
      * Get the cache tags for the given request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
     public function getCacheTags($request)
@@ -70,16 +72,16 @@ class VarnishCache
                 $status = $response->getStatusCode();
 
                 $results[] = [
-                    'url'     => $fullUri,
-                    'status'  => $status,
+                    'url' => $fullUri,
+                    'status' => $status,
                     'success' => $status >= 200 && $status < 300,
                 ];
             } catch (\Exception $e) {
                 $results[] = [
-                    'url'     => $fullUri,
-                    'status'  => null,
+                    'url' => $fullUri,
+                    'status' => null,
                     'success' => false,
-                    'error'   => $e->getMessage(),
+                    'error' => $e->getMessage(),
                 ];
             }
         }

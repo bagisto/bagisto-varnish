@@ -12,7 +12,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'catalog.product.update.after'  => [
+        'catalog.product.update.after' => [
             'Webkul\Varnish\Listeners\Product@afterUpdate',
         ],
 
@@ -36,15 +36,15 @@ class EventServiceProvider extends ServiceProvider
             'Webkul\Varnish\Listeners\Review@beforeDelete',
         ],
 
-        'checkout.order.save.after'     => [
+        'checkout.order.save.after' => [
             'Webkul\Varnish\Listeners\Order@afterCancelOrCreate',
         ],
 
-        'sales.order.cancel.after'      => [
+        'sales.order.cancel.after' => [
             'Webkul\Varnish\Listeners\Order@afterCancelOrCreate',
         ],
 
-        'sales.refund.save.after'       => [
+        'sales.refund.save.after' => [
             'Webkul\Varnish\Listeners\Refund@afterCreate',
         ],
 

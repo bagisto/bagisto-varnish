@@ -4,6 +4,8 @@
 -->
 @php
     $showCompare = (bool) core()->getConfigData('catalog.products.settings.compare_option');
+
+    $showWishlist = (bool) core()->getConfigData('customer.settings.wishlist.wishlist_option');
 @endphp
 
 <div class="flex flex-wrap gap-4 px-4 pb-4 pt-6 shadow-sm lg:hidden">
@@ -359,7 +361,7 @@
             },
 
             mounted() {
-                this.getCategories();
+                this.initCategories();
             },
 
             computed: {
@@ -369,10 +371,27 @@
             },
 
             methods: {
+                initCategories() {
+                    try {
+                        const stored = localStorage.getItem('categories');
+
+                        if (stored) {
+                            this.categories = JSON.parse(stored);
+                            this.isLoading = false;
+                            return;
+                        }
+
+                    } catch (e) {}
+
+                    this.getCategories();
+                },
+
                 getCategories() {
                     this.$axios.get("{{ route('shop.api.categories.tree') }}")
                         .then(response => {
                             this.categories = response.data.data;
+                            
+                            localStorage.setItem('categories', JSON.stringify(this.categories));
                         })
                         .catch(error => {
                             console.log(error);
