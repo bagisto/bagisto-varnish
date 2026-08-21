@@ -142,10 +142,12 @@ Cache-Control: no-cache, no-store, must-revalidate
 For **routes that should be cached**:
 
 ```
-Cache-Control: public, max-age=604800, s-maxage=604800
+Cache-Control: public, s-maxage=604800, max-age=0, must-revalidate
 ```
 
 *(Example: 7 days)*
+
+The lifetime is given to `s-maxage`, which only shared caches such as Varnish honour, while browsers are asked to revalidate. A purge reaches Varnish alone — were the same lifetime given to `max-age`, every visitor who had already loaded the page would hold a private copy of it for a week that nothing could invalidate.
 
 ---
 
@@ -170,8 +172,8 @@ Navigate to: **Admin → Configuration → Cache Management → Varnish → Conf
 Select **Varnish** as the cache application, then provide the following:
 
 1. **Access List** – IPs allowed to purge the cache (e.g., `localhost`).
-2. **Varnish Host URL** – Varnish server IP and port for purging/banning cache via UI.
-3. **Backend Host URL** – Laravel Bagisto server IP used in the exported VCL.
+2. **Varnish Host URL** – Varnish server IP and port for purging/banning cache via UI. Every purge is sent here, so a wrong value means nothing is ever cleared.
+3. **Backend Host URL** – Laravel Bagisto server IP used in the exported VCL. Give the host on its own; a scheme or port is ignored, as the port has its own field.
 4. **Backend Host Port** – Laravel Bagisto server port used in the exported VCL.
 5. **Grace Period** – Duration for serving stale content if the backend is slow or unavailable.
 
@@ -190,7 +192,13 @@ Navigate to: **Admin → Configuration → Cache Management → Varnish → Purg
 
 The package automatically purges cache when:
 
-* Products, categories, pages, orders, reviews, refunds, or theme changes occur.
+* Products, categories, pages, orders, reviews, or refunds change.
+* A section is published, created or deleted under **Appearance**. A footer or service section is drawn by the sitewide layout, so it drops the whole cache; any other section drops the home page.
+* A channel is updated, which includes activating a different theme.
+
+A purge clears the page in every channel, locale and currency it was cached under, so it does not matter which locale the admin saving the change happens to be in.
+
+> **Upgrading:** cached pages are stamped with the tags they will later be purged by, so pages already in Varnish from a previous version carry the old tags. Run **Purge Everything** once after deploying.
 
 You can also manually trigger purging by adding your own events in `EventServiceProvider` and calling:
 

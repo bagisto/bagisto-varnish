@@ -25,7 +25,7 @@ return array_merge($items, [
         'name' => 'varnish::app.configuration.varnish.title',
         'info' => 'varnish::app.configuration.varnish.info',
         'icon' => 'settings/store.svg',
-        'sort' => 2,
+        'sort' => 3,
     ], [
         'key' => 'cache_management.varnish.configuration',
         'name' => 'varnish::app.configuration.varnish.configuration.title',

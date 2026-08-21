@@ -8,12 +8,20 @@ use Illuminate\Support\Facades\Http;
 class VarnishClient
 {
     /**
+     * Seconds to wait on Varnish before giving up.
+     *
+     * A purge rides along with an admin save, so an unreachable Varnish must not be able to
+     * hold that save open.
+     */
+    public const TIMEOUT = 5;
+
+    /**
      * The Varnish server URL.
      */
     protected string $varnishServerUrl;
 
     /**
-     * Create a new service instance.
+     * Set the Varnish server URL.
      */
     public function setVarnishServerUrl(string $varnishServerUrl): void
     {
@@ -23,14 +31,22 @@ class VarnishClient
     /**
      * Send an HTTP request to the Varnish server.
      *
+     * A full purge carries the tags pattern alongside the purge-all header, so that a VCL
+     * exported before that header existed still bans everything Bagisto tagged.
+     *
      * @return Response
      */
     public function sendRequest(string $method, string $uri, array $options = [])
     {
+        $headers = ['X-Bagisto-Tags-Pattern' => $uri];
+
+        if (! empty($options['purge_all'])) {
+            $headers['X-Bagisto-Purge-All'] = '1';
+        }
+
         return Http::withOptions(['http_errors' => false])
-            ->withHeaders([
-                'X-Bagisto-Tags-Pattern' => $uri,
-            ])
+            ->timeout($options['timeout'] ?? self::TIMEOUT)
+            ->withHeaders($headers)
             ->send($method, $this->varnishServerUrl);
     }
 
@@ -39,8 +55,8 @@ class VarnishClient
      *
      * @return Response
      */
-    public function purge(string $uri)
+    public function purge(string $uri, bool $purgeAll = false)
     {
-        return $this->sendRequest('PURGE', $uri);
+        return $this->sendRequest('PURGE', $uri, ['purge_all' => $purgeAll]);
     }
 }

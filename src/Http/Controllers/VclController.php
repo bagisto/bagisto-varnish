@@ -17,10 +17,10 @@ class VclController extends Controller
     public function exportVcl()
     {
         $data = [
-            'access_list' => array_map('trim', explode(',', core()->getConfigData('cache_management.varnish.configuration.varnish_access_list') ?? 'localhost,127.0.0.1,::1')),
-            'backend_url' => core()->getConfigData('cache_management.varnish.configuration.varnish_backend_url') ?? 'localhost',
-            'backend_port' => core()->getConfigData('cache_management.varnish.configuration.varnish_backend_port') ?? '8080',
-            'grace_period' => core()->getConfigData('cache_management.varnish.configuration.varnish_grace_period') ?? '3d',
+            'access_list' => array_filter(array_map('trim', explode(',', core()->getConfigData('cache_management.varnish.configuration.varnish_access_list') ?: 'localhost,127.0.0.1,::1'))),
+            'backend_url' => $this->getBackendHost(),
+            'backend_port' => core()->getConfigData('cache_management.varnish.configuration.varnish_backend_port') ?: '8080',
+            'grace_period' => core()->getConfigData('cache_management.varnish.configuration.varnish_grace_period') ?: '3d',
         ];
 
         $vclContent = view('varnish::admin.vcls.default', $data)->render();
@@ -97,7 +97,7 @@ class VclController extends Controller
     public function purgeFullCache(Request $request)
     {
         try {
-            $result = VarnishCache::forget('.');
+            $result = VarnishCache::flush();
 
             $successUrls = [];
             $failedUrls = [];
@@ -137,5 +137,20 @@ class VclController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    /**
+     * The Bagisto host for the VCL's backend declaration.
+     *
+     * `.host` takes a hostname or an address on its own. A scheme or a port in the configured
+     * value would make the exported file fail to compile, and the port has its own field.
+     */
+    protected function getBackendHost(): string
+    {
+        $url = trim(core()->getConfigData('cache_management.varnish.configuration.varnish_backend_url') ?: 'localhost');
+
+        $url = preg_replace('~^https?://~i', '', $url);
+
+        return trim(explode(':', trim($url, '/'))[0]) ?: 'localhost';
     }
 }

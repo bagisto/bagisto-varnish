@@ -5,8 +5,8 @@ import std;
 # If you're using SSL offloading, ensure your proxy or load balancer sends this header: 'X-SSL-Offloaded: https'
 
 backend default {
-    .host = {{ $backend_url }};
-    .port = {{ $backend_port }};
+    .host = "{{ $backend_url }}";
+    .port = "{{ $backend_port }}";
     .first_byte_timeout = 600s;
     .probe = {
         .timeout = 2s;
@@ -32,8 +32,17 @@ sub vcl_recv {
             return (synth(405, "Method not allowed"));
         }
 
-        if (!req.http.X-Bagisto-Tags-Pattern) {
-            return (synth(400, "X-Bagisto-Tags-Pattern"));
+        if (!req.http.X-Bagisto-Purge-All && !req.http.X-Bagisto-Tags-Pattern) {
+            return (synth(400, "X-Bagisto-Tags-Pattern or X-Bagisto-Purge-All"));
+        }
+
+        # Every cached object carries X-Bagisto-Url, so a full purge also reaches the ones
+        # Bagisto never tagged: static files, ESI fragments and any route that does not run
+        # the cache.response middleware. Banning on X-Bagisto-Tags would leave those behind.
+        if (req.http.X-Bagisto-Purge-All) {
+          ban("obj.http.X-Bagisto-Url ~ .");
+
+          return (synth(200, "Purged"));
         }
 
         if (req.http.X-Bagisto-Tags-Pattern) {
@@ -70,7 +79,7 @@ sub vcl_recv {
     }
 
     # Set initial grace period usage status
-    set req.http.grace = {{ $grace_period }};
+    set req.http.grace = "{{ $grace_period }}";
 
     # normalize url in case of leading HTTP scheme and domain
     set req.url = regsub(req.url, "^http[s]?://", "");
@@ -143,6 +152,10 @@ sub vcl_backend_response {
     set beresp.grace = 3d;
     set beresp.ttl = 1h;
 
+    # Stamped on every object so a full purge has something to ban on even when Bagisto did
+    # not tag the response. Taken off again in vcl_deliver, so it never reaches a browser.
+    set beresp.http.X-Bagisto-Url = bereq.url;
+
     if (beresp.http.content-type ~ "text") {
         set beresp.do_esi = true;
     }
@@ -210,6 +223,9 @@ sub vcl_backend_response {
 }
 
 sub vcl_deliver {
+    # Internal to the ban above. Unsetting it here leaves it on the stored object.
+    unset resp.http.X-Bagisto-Url;
+
     if (obj.uncacheable) {
         set resp.http.X-Bagisto-Cache-Debug = "UNCACHEABLE";
     } else if (obj.hits) {

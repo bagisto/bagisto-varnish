@@ -10,6 +10,10 @@ class VarnishCache
     /**
      * Handle request.
      *
+     * The lifetime is offered to Varnish through `s-maxage` alone, while browsers are asked to
+     * revalidate. A purge reaches only the shared cache, so a browser handed the same lifetime
+     * would keep a copy that nothing could invalidate.
+     *
      * @param  mixed  $request
      * @return mixed
      */
@@ -24,7 +28,8 @@ class VarnishCache
         }
 
         $response->headers->set('X-Cacheable', 'YES');
-        $response->headers->set('Cache-Control', 'public, max-age='. 60 * $cacheTimeInMinutes.', s-maxage='. 60 * $cacheTimeInMinutes);
+
+        $response->headers->set('Cache-Control', 'public, s-maxage='.(60 * $cacheTimeInMinutes).', max-age=0, must-revalidate');
 
         if ($request->ajax()) {
             $response->headers->set('X-Ajax', 'Yes');
@@ -48,10 +53,17 @@ class VarnishCache
             $responseTags = explode(',', $response->headers->get('X-Bagisto-Tag'));
 
             foreach ($responseTags as $tag) {
-                $tags[] = VarnishCacheFacade::getSufix().trim($tag);
+                $tag = trim($tag);
+
+                if ($tag === '') {
+                    continue;
+                }
+
+                $tags[] = $tag;
+                $tags[] = $tag.VarnishCacheFacade::getSufix();
             }
         }
 
-        return implode(',', $tags);
+        return implode(',', array_unique($tags));
     }
 }

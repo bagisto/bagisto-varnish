@@ -68,6 +68,30 @@ class EventServiceProvider extends ServiceProvider
             'Webkul\Varnish\Listeners\ThemeCustomization@beforeDelete',
         ],
 
+        /**
+         * Appearance, which replaced theme customization in Bagisto 2.4.
+         *
+         * Only the events that move the storefront are listened for. Editing, reordering and
+         * switching a section on or off are all held as drafts that nothing but the uncached
+         * preview route draws, and discarding them puts back what is already cached. Publish
+         * raises `section.update.after` for each section it releases.
+         */
+        'section.create.after' => [
+            'Webkul\Varnish\Listeners\Appearance@afterCreate',
+        ],
+
+        'section.update.after' => [
+            'Webkul\Varnish\Listeners\Appearance@afterUpdate',
+        ],
+
+        'section.delete.before' => [
+            'Webkul\Varnish\Listeners\Appearance@beforeDelete',
+        ],
+
+        'core.channel.update.after' => [
+            'Webkul\Varnish\Listeners\Appearance@afterChannelUpdate',
+        ],
+
         'marketing.search_seo.url_rewrites.update.after' => [
             'Webkul\Varnish\Listeners\URLRewrite@afterUpdate',
         ],
