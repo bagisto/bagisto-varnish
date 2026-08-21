@@ -20,7 +20,7 @@
                 <!-- Product Image -->
                 <a
                     :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)"
-                    :aria-label="product.name + ' '"
+                    :aria-label="product.name"
                 >
                     <x-shop::media.images.lazy
                         class="after:content-[' '] relative bg-zinc-100 transition-all duration-300 after:block after:pb-[calc(100%+9px)] group-hover:scale-105"
@@ -34,7 +34,7 @@
                         ::index="product.id"
                         width="291"
                         height="300"
-                        ::alt="product.name"
+                        ::alt="product.base_image.alt"
                     />
                 </a>
 
@@ -122,7 +122,7 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.name.before') !!}
 
-                <p class="break-all text-base font-medium max-md:mb-1.5 max-md:max-w-56 max-md:whitespace-break-spaces max-md:leading-6 max-sm:max-w-[192px] max-sm:text-sm max-sm:leading-4">
+                <p class="break-words text-base font-medium max-md:mb-1.5 max-md:max-w-56 max-md:whitespace-break-spaces max-md:leading-6 max-sm:max-w-[192px] max-sm:text-sm max-sm:leading-4">
                     @{{ product.name }}
                 </p>
 
@@ -132,7 +132,7 @@
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
                 <div
-                    class="flex items-center gap-2.5 text-lg font-semibold max-sm:text-sm max-sm:leading-6"
+                    class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold max-sm:text-sm max-sm:leading-6"
                     v-html="product.price_html"
                 >
                 </div>
@@ -206,7 +206,7 @@
                         ::index="product.id"
                         width="291"
                         height="300"
-                        ::alt="product.name"
+                        ::alt="product.base_image.alt"
                     />
                 </a>
 
@@ -276,7 +276,7 @@
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
                 <div
-                    class="flex gap-2.5 text-lg font-semibold"
+                    class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold"
                     v-html="product.price_html"
                 >
                 </div>
@@ -355,7 +355,6 @@
 
             methods: {
                 addToWishlist() {
-                    
                     if (this.isCustomer) {
                         this.$axios.post(`{{ route('shop.api.customers.account.wishlist.store') }}`, {
                                 product_id: this.product.id

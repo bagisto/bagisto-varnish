@@ -1,5 +1,5 @@
-<div 
-    id="varnish-vcl-export" 
+<div
+    id="varnish-vcl-export"
     style="display: block;"
 >
     <div class="flex items-center gap-x-2.5">

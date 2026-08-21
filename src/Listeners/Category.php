@@ -2,37 +2,34 @@
 
 namespace Webkul\Varnish\Listeners;
 
-use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Varnish\Facades\VarnishCache;
 
-class Category
+class Category extends \Webkul\FPC\Listeners\Category
 {
     /**
-     * Create a new listener instance.
+     * Handle category create event.
      *
+     * @param  \Webkul\Category\Contracts\Category  $category
      * @return void
      */
-    public function __construct(protected CategoryRepository $categoryRepository) {}
+    public function afterCreate($category)
+    {
+        VarnishCache::forget($this->homePath());
+    }
 
     /**
-     * After category update
+     * Handle category update event.
      *
      * @param  \Webkul\Category\Contracts\Category  $category
      * @return void
      */
     public function afterUpdate($category)
     {
-        foreach (core()->getAllLocales() as $locale) {
-            if ($categoryTranslation = $category->translate($locale->code)) {
-                VarnishCache::forget($categoryTranslation->slug);
-            }
-
-            VarnishCache::forget($category->translate(core()->getDefaultLocaleCodeFromDefaultChannel())->slug);
-        }
+        VarnishCache::forget($this->forgettablePaths($category));
     }
 
     /**
-     * Before category delete
+     * Handle category deletion event.
      *
      * @param  int  $categoryId
      * @return void
@@ -41,12 +38,10 @@ class Category
     {
         $category = $this->categoryRepository->find($categoryId);
 
-        foreach (core()->getAllLocales() as $locale) {
-            if ($categoryTranslation = $category->translate($locale->code)) {
-                VarnishCache::forget($categoryTranslation->slug);
-            }
-
-            VarnishCache::forget($category->translate(core()->getDefaultLocaleCodeFromDefaultChannel())->slug);
+        if (! $category) {
+            return;
         }
+
+        VarnishCache::forget($this->forgettablePaths($category));
     }
 }

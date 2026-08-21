@@ -12,12 +12,20 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        'catalog.product.create.after' => [
+            'Webkul\Varnish\Listeners\Product@afterCreate',
+        ],
+
         'catalog.product.update.after' => [
             'Webkul\Varnish\Listeners\Product@afterUpdate',
         ],
 
         'catalog.product.delete.before' => [
             'Webkul\Varnish\Listeners\Product@beforeDelete',
+        ],
+
+        'catalog.category.create.after' => [
+            'Webkul\Varnish\Listeners\Category@afterCreate',
         ],
 
         'catalog.category.update.after' => [
@@ -56,16 +64,8 @@ class EventServiceProvider extends ServiceProvider
             'Webkul\Varnish\Listeners\Page@beforeDelete',
         ],
 
-        'theme_customization.create.after' => [
-            'Webkul\Varnish\Listeners\ThemeCustomization@afterCreate',
-        ],
-
-        'theme_customization.update.after' => [
-            'Webkul\Varnish\Listeners\ThemeCustomization@afterUpdate',
-        ],
-
-        'theme_customization.delete.before' => [
-            'Webkul\Varnish\Listeners\ThemeCustomization@beforeDelete',
+        'core.configuration.save.after' => [
+            'Webkul\Varnish\Listeners\CoreConfig@afterUpdate',
         ],
 
         /**

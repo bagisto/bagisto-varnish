@@ -7,6 +7,17 @@ use Webkul\Varnish\Facades\VarnishCache;
 class Product extends \Webkul\FPC\Listeners\Product
 {
     /**
+     * Handle product create event.
+     *
+     * @param  \Webkul\Product\Contracts\Product  $product
+     * @return void
+     */
+    public function afterCreate($product)
+    {
+        VarnishCache::forget($this->getForgettableUrls($product));
+    }
+
+    /**
      * Handle product update event.
      *
      * @param  \Webkul\Product\Contracts\Product  $product
@@ -14,9 +25,7 @@ class Product extends \Webkul\FPC\Listeners\Product
      */
     public function afterUpdate($product)
     {
-        $urls = $this->getForgettableUrls($product);
-
-        VarnishCache::forget($urls);
+        VarnishCache::forget($this->getForgettableUrls($product));
     }
 
     /**
@@ -29,8 +38,10 @@ class Product extends \Webkul\FPC\Listeners\Product
     {
         $product = $this->productRepository->find($productId);
 
-        $urls = $this->getForgettableUrls($product);
+        if (! $product) {
+            return;
+        }
 
-        VarnishCache::forget($urls);
+        VarnishCache::forget($this->getForgettableUrls($product));
     }
 }

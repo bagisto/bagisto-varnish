@@ -2,9 +2,7 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
-## **v2.0.1** - *Unreleased*
-
-### 🐞 Bug Fixes
+## **v2.1.0 (21st of August, 2026)** - *Release*
 
 * Purge requests are sent to the **Varnish Host URL** (`varnish_url`) instead of the **Backend Host URL**, which pointed them at Bagisto itself so no ban ever reached Varnish. Installs that only filled the backend field keep working, as it is still read as a fallback.
 
@@ -25,6 +23,18 @@ This changelog consists of the bug & security fixes and new features included in
 * A purge can no longer hold an admin save open when Varnish is unreachable; requests time out after 5 seconds.
 
 * Cached pages are sent as `s-maxage=<ttl>, max-age=0, must-revalidate` rather than handing the same lifetime to `max-age`. Varnish still holds the page for the full lifetime, but a browser no longer keeps a private copy that no purge can reach, which left a visitor who had already loaded a page seeing the old one for up to a week after it was republished.
+
+* Creating a **product** or a **category** now purges. Only update and delete were listened for, so a newly published product was absent from cached category and home pages until something else happened to clear them.
+
+* Saving any **configuration** now purges. Currency, tax, channel and theme settings reach the whole storefront and previously left it serving the values from before the save.
+
+* Deleting a product or category whose row has already gone no longer raises a fatal error mid-request; the listener returns instead.
+
+* Updating a category sends one purge for its pages rather than repeating the default-locale purge once per installed locale, and now drops the home page it is listed on.
+
+* Removed the `theme_customization.*` listeners. Those events no longer exist in Bagisto 2.4 and had been replaced by the `section.*` events, so the class was unreachable.
+
+* Rewrote installation and configuration in the README. The provider snippet showed the old `'providers' => [...]` array from `config/app.php` rather than the flat array Bagisto 2.4 returns from `bootstrap/providers.php`, and the VCL was installed before the configuration it is generated from. Added a diagram distinguishing **Varnish Host URL** from **Backend Host URL**, steps to verify caching and purging, and a troubleshooting table.
 
 ## **v2.0.0 (20th of March, 2025)** - *Release*
 
