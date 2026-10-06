@@ -2,6 +2,14 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
+## **v2.2.0 (6th of October, 2026)** - *Release*
+
+* Compatibility with **Bagisto v2.5** on Laravel 13 and PHP 8.4.
+
+* Rebased the three storefront views the package overrides — the product card and the desktop and mobile headers — on their Bagisto 2.5 originals. They had fallen behind, so installing the package reverted the header's accessible buttons, its new account drawer and the Tailwind CSS 4 markup. The customer blocks the package replaces with ESI holes now follow 2.5's structure, which selects a dropdown's content by authentication state.
+
+* Fixed the "Withdraw from a Contract" link in the customer dropdown, which pointed at a route and a translation key Bagisto 2.5 renamed, so the dropdown failed to render.
+
 ## **v2.1.0 (21st of August, 2026)** - *Release*
 
 * Purge requests are sent to the **Varnish Host URL** (`varnish_url`) instead of the **Backend Host URL**, which pointed them at Bagisto itself so no ban ever reached Varnish. Installs that only filled the backend field keep working, as it is still read as a fallback.

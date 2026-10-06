@@ -11,6 +11,9 @@
         "full-page-cache"
     ],
     "license": "MIT",    
+    "require": {
+        "php": "^8.4"
+    },
     "autoload": {
         "psr-4": {
             "Webkul\\Varnish\\": "src/"

@@ -1,6 +1,6 @@
 {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.before') !!}
 
-<div class="flex min-h-[78px] w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-[60px] max-1180:px-8">
+<div class="flex min-h-19.5 w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-15 max-1180:px-8">
     <!--
         This section will provide categories for the first, second, and third levels. If
         additional levels are required, users can customize them according to their needs.
@@ -17,7 +17,7 @@
                 src="{{ core()->getCurrentChannel()->logo_url ?? bagisto_asset('images/logo.svg') }}"
                 width="131"
                 height="29"
-                alt="{{ config('app.name') }}"
+                alt="{{ core()->getCurrentChannel()->logo_alt ?: config('app.name') }}"
             >
         </a>
 
@@ -28,17 +28,17 @@
         <v-desktop-category>
             <div class="flex items-center gap-5">
                 <span
-                    class="shimmer h-6 w-20 rounded"
+                    class="w-20 h-6 rounded-sm shimmer"
                     role="presentation"
                 ></span>
 
                 <span
-                    class="shimmer h-6 w-20 rounded"
+                    class="w-20 h-6 rounded-sm shimmer"
                     role="presentation"
                 ></span>
 
                 <span
-                    class="shimmer h-6 w-20 rounded"
+                    class="w-20 h-6 rounded-sm shimmer"
                     role="presentation"
                 ></span>
             </div>
@@ -56,8 +56,11 @@
         <div class="relative w-full">
             <form
                 action="{{ route('shop.search.index') }}"
-                class="flex max-w-[445px] items-center"
+                class="flex max-w-111.25 items-center"
                 role="search"
+                toolname="search_products"
+                tooldescription="{{ trans('shop::app.components.layouts.webmcp.search-products') }}"
+                toolautosubmit
             >
                 <label
                     for="organic-search"
@@ -68,13 +71,23 @@
 
                 <div class="icon-search pointer-events-none absolute top-2.5 flex items-center text-xl ltr:left-3 rtl:right-3"></div>
 
+                @php
+                    $maxQueryLength = ((int) core()->getConfigData('search_engines.elastic.settings.max_query_length')) ?: 1000;
+
+                    $minQueryLength = (int) core()->getConfigData('search_engines.elastic.settings.min_query_length');
+
+                    $minQueryLength = $minQueryLength > 0 && $minQueryLength <= $maxQueryLength ? $minQueryLength : 0;
+                @endphp
+
                 <input
                     type="text"
+                    id="organic-search"
                     name="query"
                     value="{{ request('query') }}"
-                    class="block w-full rounded-lg border border-transparent bg-zinc-100 px-11 py-3 text-xs font-medium text-gray-900 transition-all hover:border-gray-400 focus:border-gray-400"
-                    minlength="{{ core()->getConfigData('catalog.products.search.min_query_length') }}"
-                    maxlength="{{ core()->getConfigData('catalog.products.search.max_query_length') }}"
+                    toolparamdescription="{{ trans('shop::app.components.layouts.webmcp.search-products-query') }}"
+                    class="block w-full py-3 text-xs font-medium text-gray-900 transition-all border border-transparent rounded-lg bg-zinc-100 px-11 hover:border-gray-400 focus:border-gray-400"
+                    minlength="{{ $minQueryLength }}"
+                    maxlength="{{ $maxQueryLength }}"
                     placeholder="@lang('shop::app.components.layouts.header.desktop.bottom.search-text')"
                     aria-label="@lang('shop::app.components.layouts.header.desktop.bottom.search-text')"
                     aria-required="true"
@@ -92,7 +105,6 @@
                 @if (core()->getConfigData('catalog.products.settings.image_search'))
                     @include('shop::search.images.index')
                 @endif
-
             </form>
         </div>
 
@@ -110,7 +122,7 @@
                     aria-label="@lang('shop::app.components.layouts.header.desktop.bottom.compare')"
                 >
                     <span
-                        class="icon-compare inline-block cursor-pointer text-2xl"
+                        class="inline-block text-2xl cursor-pointer icon-compare"
                         role="presentation"
                     ></span>
                 </a>
@@ -132,19 +144,18 @@
             <!-- user profile -->
             <x-shop::dropdown position="bottom-{{ core()->getCurrentLocale()->direction === 'ltr' ? 'right' : 'left' }}">
                 <x-slot:toggle>
-                    <span
-                        class="icon-users inline-block cursor-pointer text-2xl"
-                        role="button"
+                    <button
+                        type="button"
+                        class="inline-block text-2xl cursor-pointer icon-users"
                         aria-label="@lang('shop::app.components.layouts.header.desktop.bottom.profile')"
-                        tabindex="0"
-                    ></span>
+                    ></button>
                 </x-slot>
 
+                <!-- Guest Dropdown -->
                 <!-- This user profile block needs to be dynamic for FPC, and since ESI does not work with components, custom logic has been implemented. -->
-                <x-slot:content>
-                    {{-- <esi:include src="/esi?tag=customer-desktop-dropdown" /> --}}
+                <x-slot:content class="p-0!">
                     <x-varnish::dynamic-view view="customer-desktop-dropdown"></x-varnish::dynamic-view>
-                </x-slot:content>
+                </x-slot>
             </x-shop::dropdown>
 
             {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.profile.after') !!}
@@ -163,17 +174,17 @@
             v-if="isLoading"
         >
             <span
-                class="shimmer h-6 w-20 rounded"
+                class="w-20 h-6 rounded-sm shimmer"
                 role="presentation"
             ></span>
 
             <span
-                class="shimmer h-6 w-20 rounded"
+                class="w-20 h-6 rounded-sm shimmer"
                 role="presentation"
             ></span>
 
             <span
-                class="shimmer h-6 w-20 rounded"
+                class="w-20 h-6 rounded-sm shimmer"
                 role="presentation"
             ></span>
         </div>
@@ -184,7 +195,7 @@
             v-else-if="'{{ core()->getConfigData('general.design.categories.category_view') }}' !== 'sidebar'"
         >
             <div
-                class="group relative flex h-[77px] items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
+                class="group relative flex h-19.25 items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
                 v-for="category in categories"
             >
                 <span>
@@ -197,12 +208,13 @@
                 </span>
 
                 <div
-                    class="pointer-events-none absolute top-[78px] z-[1] max-h-[580px] w-max max-w-[1260px] translate-y-1 overflow-auto overflow-x-auto border border-b-0 border-l-0 border-r-0 border-t border-[#F3F3F3] bg-white p-9 opacity-0 shadow-[0_6px_6px_1px_rgba(0,0,0,.3)] transition duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:duration-200 group-hover:ease-in ltr:-left-9 rtl:-right-9"
+                    class="pointer-events-none absolute top-19.5 z-1 max-h-145 w-max max-w-315 translate-y-1 overflow-auto overflow-x-auto border border-b-0 border-l-0 border-r-0 border-t border-[#F3F3F3] bg-white p-9 opacity-0 shadow-[0_6px_6px_1px_rgba(0,0,0,.3)] transition duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:duration-200 group-hover:ease-in ltr:-left-9 rtl:-right-9"
+                    data-mega-menu-dropdown
                     v-if="category.children && category.children.length"
                 >
-                    <div class="flex justify-between gap-x-[70px]">
+                    <div class="flex justify-between gap-x-17.5">
                         <div
-                            class="grid w-full min-w-max max-w-[150px] flex-auto grid-cols-[1fr] content-start gap-5"
+                            class="grid w-full min-w-max max-w-37.5 flex-auto grid-cols-[1fr] content-start gap-5"
                             v-for="pairCategoryChildren in pairCategoryChildren(category)"
                         >
                             <template v-for="secondLevelCategory in pairCategoryChildren">
@@ -238,11 +250,11 @@
             <div class="flex items-center">
                 <!-- "All" button for opening the category drawer -->
                 <div
-                    class="flex h-[77px] cursor-pointer items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
+                    class="flex h-19.25 cursor-pointer items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
                     @click="toggleCategoryDrawer"
                 >
                     <span class="flex items-center gap-1 px-5 uppercase">
-                        <span class="icon-hamburger text-xl"></span>
+                        <span class="text-xl icon-hamburger"></span>
 
                         @lang('shop::app.components.layouts.header.desktop.bottom.all')
                     </span>
@@ -250,7 +262,7 @@
 
                 <!-- Show only first 4 categories in main navigation -->
                 <div
-                    class="group relative flex h-[77px] items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
+                    class="group relative flex h-19.25 items-center border-b-4 border-transparent hover:border-b-4 hover:border-navyBlue"
                     v-for="category in categories.slice(0, 4)"
                 >
                     <span>
@@ -264,36 +276,35 @@
 
                     <!-- Dropdown for each category -->
                     <div
-                        class="pointer-events-none absolute top-[78px] z-[1] max-h-[580px] w-max max-w-[1260px] translate-y-1 overflow-auto overflow-x-auto border border-b-0 border-l-0 border-r-0 border-t border-[#F3F3F3] bg-white p-9 opacity-0 shadow-[0_6px_6px_1px_rgba(0,0,0,.3)] transition duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:duration-200 group-hover:ease-in ltr:-left-9 rtl:-right-9"
+                        class="pointer-events-none absolute top-19.5 z-1 max-h-145 w-max max-w-315 translate-y-1 overflow-auto overflow-x-auto border border-b-0 border-l-0 border-r-0 border-t border-[#F3F3F3] bg-white p-9 opacity-0 shadow-[0_6px_6px_1px_rgba(0,0,0,.3)] transition duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:duration-200 group-hover:ease-in ltr:-left-9 rtl:-right-9 flex justify-between gap-x-17.5"
+                        data-mega-menu-dropdown
                         v-if="category.children && category.children.length"
                     >
-                        <div class="flex justify-between gap-x-[70px]">
-                            <div
-                                class="grid w-full min-w-max max-w-[150px] flex-auto grid-cols-[1fr] content-start gap-5"
-                                v-for="pairCategoryChildren in pairCategoryChildren(category)"
-                            >
-                                <template v-for="secondLevelCategory in pairCategoryChildren">
-                                    <p class="font-medium text-navyBlue">
-                                        <a :href="secondLevelCategory.url">
-                                            @{{ secondLevelCategory.name }}
-                                        </a>
-                                    </p>
+                        <div
+                            class="grid w-full min-w-max max-w-37.5 flex-auto grid-cols-[1fr] content-start gap-5"
+                            v-for="pairCategoryChildren in pairCategoryChildren(category)"
+                        >
+                            <template v-for="secondLevelCategory in pairCategoryChildren">
+                                <p class="font-medium text-navyBlue">
+                                    <a :href="secondLevelCategory.url">
+                                        @{{ secondLevelCategory.name }}
+                                    </a>
+                                </p>
 
-                                    <ul
-                                        class="grid grid-cols-[1fr] gap-3"
-                                        v-if="secondLevelCategory.children && secondLevelCategory.children.length"
+                                <ul
+                                    class="grid grid-cols-[1fr] gap-3"
+                                    v-if="secondLevelCategory.children && secondLevelCategory.children.length"
+                                >
+                                    <li
+                                        class="text-sm font-medium text-zinc-500"
+                                        v-for="thirdLevelCategory in secondLevelCategory.children"
                                     >
-                                        <li
-                                            class="text-sm font-medium text-zinc-500"
-                                            v-for="thirdLevelCategory in secondLevelCategory.children"
-                                        >
-                                            <a :href="thirdLevelCategory.url">
-                                                @{{ thirdLevelCategory.name }}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </template>
-                            </div>
+                                        <a :href="thirdLevelCategory.url">
+                                            @{{ thirdLevelCategory.name }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -310,14 +321,14 @@
                 <x-slot:toggle></x-slot>
 
                 <x-slot:header class="border-b border-gray-200">
-                    <div class="flex w-full items-center justify-between">
+                    <div class="flex items-center justify-between w-full">
                         <p class="text-xl font-medium">
                             @lang('shop::app.components.layouts.header.desktop.bottom.categories')
                         </p>
                     </div>
                 </x-slot>
 
-                <x-slot:content class="!px-0">
+                <x-slot:content class="px-0!">
                     <!-- Wrapper with transition effects -->
                     <div class="relative h-full overflow-hidden">
                         <!-- Sliding container -->
@@ -329,14 +340,14 @@
                             }"
                         >
                             <!-- First level view -->
-                            <div class="h-[calc(100vh-74px)] w-full flex-shrink-0 overflow-auto">
+                            <div class="h-[calc(100vh-74px)] w-full shrink-0 overflow-auto">
                                 <div class="py-4">
                                     <div
                                         v-for="category in categories"
                                         :key="category.id"
                                         :class="{'mb-2': category.children && category.children.length}"
                                     >
-                                        <div class="flex cursor-pointer items-center justify-between px-6 py-2 transition-colors duration-200 hover:bg-gray-100">
+                                        <div class="flex items-center justify-between px-6 py-2 transition-colors duration-200 cursor-pointer hover:bg-gray-100">
                                             <a
                                                 :href="category.url"
                                                 class="text-base font-medium text-black"
@@ -352,7 +363,7 @@
                                                 :key="secondLevelCategory.id"
                                             >
                                                 <div
-                                                    class="flex cursor-pointer items-center justify-between px-6 py-2 transition-colors duration-200 hover:bg-gray-100"
+                                                    class="flex items-center justify-between px-6 py-2 transition-colors duration-200 cursor-pointer hover:bg-gray-100"
                                                     @click="showThirdLevel(secondLevelCategory, category, $event)"
                                                 >
                                                     <a
@@ -375,16 +386,16 @@
 
                             <!-- Third level view -->
                             <div
-                                class="h-full w-full flex-shrink-0"
+                                class="shrink-0 w-full h-full"
                                 v-if="currentViewLevel === 'third'"
                             >
-                                <div class="border-b border-gray-200 px-6 py-4">
+                                <div class="px-6 py-4 border-b border-gray-200">
                                     <button
                                         @click="goBackToMainView"
-                                        class="flex items-center justify-center gap-2 focus:outline-none"
+                                        class="flex items-center justify-center gap-2 focus:outline-hidden"
                                         aria-label="Go back"
                                     >
-                                        <span class="icon-arrow-left rtl:icon-arrow-right text-lg"></span>
+                                        <span class="text-lg icon-arrow-left rtl:icon-arrow-right"></span>
 
                                         <p class="text-base font-medium text-black">
                                             @lang('shop::app.components.layouts.header.desktop.bottom.back-button')
@@ -432,6 +443,12 @@
 
             mounted() {
                 this.initCategories();
+
+                window.addEventListener('resize', this.positionMegaMenus);
+            },
+
+            beforeUnmount() {
+                window.removeEventListener('resize', this.positionMegaMenus);
             },
 
             methods: {
@@ -442,6 +459,8 @@
                         if (stored) {
                             this.categories = JSON.parse(stored);
                             this.isLoading = false;
+
+                            this.$nextTick(this.positionMegaMenus);
 
                             return;
                         }
@@ -456,8 +475,9 @@
                         .then(response => {
                             this.isLoading = false;
                             this.categories = response.data.data;
-                            
                             localStorage.setItem('categories', JSON.stringify(this.categories));
+
+                            this.$nextTick(this.positionMegaMenus);
                         })
                         .catch(error => {
                             console.log(error);
@@ -505,6 +525,31 @@
 
                 goBackToMainView() {
                     this.currentViewLevel = 'main';
+                },
+
+                positionMegaMenus() {
+                    const MARGIN = 12;
+                    const viewport = document.documentElement.clientWidth;
+
+                    (this.$el.querySelectorAll?.('[data-mega-menu-dropdown]') ?? []).forEach(dropdown => {
+                        const edge = getComputedStyle(dropdown).direction === 'rtl' ? 'right' : 'left';
+
+                        dropdown.style.left = dropdown.style.right = '';
+                        dropdown.style.maxWidth = Math.min(1260, viewport - 2 * MARGIN) + 'px';
+
+                        const rect = dropdown.getBoundingClientRect();
+
+                        /**
+                         * Positive when it spills off the right edge, negative off the left, 0 when it fits.
+                         */
+                        const overflow = Math.max(0, rect.right - (viewport - MARGIN)) - Math.max(0, MARGIN - rect.left);
+
+                        if (overflow) {
+                            const base = parseFloat(getComputedStyle(dropdown)[edge]) || 0;
+
+                            dropdown.style[edge] = base + (edge === 'left' ? -overflow : overflow) + 'px';
+                        }
+                    });
                 }
             },
         });
