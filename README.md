@@ -51,9 +51,36 @@ grep -n listen /etc/nginx/sites-enabled/your-site
 
 ## ✅ Requirements
 
-* Bagisto **2.4.x**
-* PHP **8.3+** (matching Bagisto 2.4's own `>=8.3 <8.5`)
+* Bagisto **2.5.x**
+* PHP **8.4+** (matching Bagisto 2.5's own `^8.4`)
 * Varnish **6.0 or newer** (tested on 6.x and 7.x)
+
+On an older Bagisto, install the matching package version from the table below instead — the
+releases are **not** interchangeable, because each one tracks the storefront views and the
+configuration tree of its own Bagisto line.
+
+### Version compatibility
+
+| Package | Bagisto | PHP | Released | Install with |
+|---|---|---|---|---|
+| **2.2.0** | **2.5.x** | **8.4+** (`^8.4`) | Oct 2026 | `composer require bagisto/bagisto-varnish:^2.2` |
+| 2.1.0 | 2.4.x | 8.3 – 8.4 (`>=8.3 <8.5`) | Aug 2026 | `composer require bagisto/bagisto-varnish:^2.1` |
+| 2.0.0 | 2.4.x | 8.3 – 8.4 (`>=8.3 <8.5`) | Mar 2026 | superseded — use 2.1.0 |
+| 1.1.0 | 2.3.7 | as Bagisto 2.3 requires | Sep 2025 | `composer require bagisto/bagisto-varnish:^1.1` |
+| 1.0.0 | 2.3.x | as Bagisto 2.3 requires | Sep 2025 | superseded — use 1.1.0 |
+
+The PHP range is Bagisto's own for that line; only 2.2.0 declares `php` in its `composer.json`.
+Varnish 6.0+ applies to every row.
+
+**Two upgrades are not drop-in**, so check them before moving between lines:
+
+| Moving to | What changes |
+|---|---|
+| **2.0.0** (Bagisto 2.4) | The provider moves from `config/app.php`'s `'providers' => [...]` array to the flat array in `bootstrap/providers.php`, and the configuration key is renamed `fpc` → `varnish`. Settings saved under `fpc` are not carried over — re-enter them under **Cache Management → Varnish**. |
+| **2.2.0** (Bagisto 2.5) | The three published storefront views are rebased on their 2.5 originals. Already-published copies are **not** overwritten by step 3, so re-publish them explicitly or the 2.5 header and product card stay reverted to the 2.4 markup:<br>`php artisan vendor:publish --provider="Webkul\Varnish\Providers\VarnishServiceProvider" --force` |
+
+Development happens on a single `master` branch, which tracks the newest Bagisto line. There is no
+long-lived 2.4 branch: the 2.4 line is held by the **`v2.1.0`** tag.
 
 ---
 
@@ -67,7 +94,7 @@ composer require bagisto/bagisto-varnish
 
 ### 2. Register the service provider
 
-Bagisto 2.4 keeps providers in **`bootstrap/providers.php`**, which returns a *flat array* — not the
+Bagisto 2.5 keeps providers in **`bootstrap/providers.php`**, which returns a *flat array* — not the
 `'providers' => [...]` block used by older Laravel versions:
 
 ```php
