@@ -2,7 +2,7 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
-## **v2.2.0 (6th of October, 2026)** - *Release*
+## **v2.2.0 (8th of October, 2026)** - *Release*
 
 * Compatibility with **Bagisto v2.5** on Laravel 13 and PHP 8.4.
 
