@@ -1,48 +1,50 @@
 @guest('customer')
-    <div class="grid gap-2.5">
-        <p class="font-dmserif text-xl">
-            @lang('shop::app.components.layouts.header.desktop.bottom.welcome-guest')
-        </p>
+    <div class="p-5">
+        <div class="grid gap-2.5">
+            <p class="font-dmserif text-xl">
+                @lang('shop::app.components.layouts.header.desktop.bottom.welcome-guest')
+            </p>
 
-        <p class="text-sm">
-            @lang('shop::app.components.layouts.header.desktop.bottom.dropdown-text')
-        </p>
+            <p class="text-sm">
+                @lang('shop::app.components.layouts.header.desktop.bottom.dropdown-text')
+            </p>
+        </div>
+
+        <p class="mt-3 w-full border border-zinc-200"></p>
+
+        {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.customers_action.before') !!}
+
+        <div class="mt-6 flex gap-4">
+            {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.sign_in_button.before') !!}
+
+            <a
+                href="{{ route('shop.customer.session.create') }}"
+                class="primary-button m-0 mx-auto block w-max rounded-2xl px-7 text-center text-base max-md:rounded-lg ltr:ml-0 rtl:mr-0"
+            >
+                @lang('shop::app.components.layouts.header.desktop.bottom.sign-in')
+            </a>
+
+            <a
+                href="{{ route('shop.customers.register.index') }}"
+                class="secondary-button m-0 mx-auto block w-max rounded-2xl border-2 px-7 text-center text-base max-md:rounded-lg max-md:py-3 ltr:ml-0 rtl:mr-0"
+            >
+                @lang('shop::app.components.layouts.header.desktop.bottom.sign-up')
+            </a>
+
+            {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.sign_up_button.after') !!}
+        </div>
+
+        @if (core()->getConfigData('sales.eu_withdrawal.general.enabled', core()->getCurrentChannelCode()))
+            <a
+                href="{{ route('shop.eu_withdrawal.guest.lookup') }}"
+                class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-navyBlue hover:underline"
+            >
+                @lang('shop::app.eu-withdrawal.guest-dropdown.link')
+            </a>
+        @endif
+
+        {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.customers_action.after') !!}
     </div>
-
-    <p class="mt-3 w-full border border-zinc-200"></p>
-
-    {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.customers_action.before') !!}
-
-    <div class="mt-6 flex gap-4">
-        {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.sign_in_button.before') !!}
-
-        <a
-            href="{{ route('shop.customer.session.create') }}"
-            class="primary-button m-0 mx-auto block w-max rounded-2xl px-7 text-center text-base max-md:rounded-lg ltr:ml-0 rtl:mr-0"
-        >
-            @lang('shop::app.components.layouts.header.desktop.bottom.sign-in')
-        </a>
-
-        <a
-            href="{{ route('shop.customers.register.index') }}"
-            class="secondary-button m-0 mx-auto block w-max rounded-2xl border-2 px-7 text-center text-base max-md:rounded-lg max-md:py-3 ltr:ml-0 rtl:mr-0"
-        >
-            @lang('shop::app.components.layouts.header.desktop.bottom.sign-up')
-        </a>
-
-        {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.sign_up_button.after') !!}
-    </div>
-
-    @if (core()->getConfigData('sales.eu_withdrawal.general.enabled', core()->getCurrentChannelCode()))
-        <a
-            href="{{ route('shop.eu_withdrawal.guest.lookup') }}"
-            class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-navyBlue hover:underline"
-        >
-            @lang('shop::app.eu-withdrawal.guest-dropdown.link')
-        </a>
-    @endif
-
-    {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.customers_action.after') !!}
 @endguest
 
 @auth('customer')
