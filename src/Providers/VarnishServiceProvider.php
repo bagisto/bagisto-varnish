@@ -50,6 +50,8 @@ class VarnishServiceProvider extends ServiceProvider
 
         $this->loadPublishers();
 
+        $this->registerAcl();
+
         $this->app->register(EventServiceProvider::class);
 
         Event::listen('bagisto.shop.layout.body.before', function ($viewRenderEventManager) {
@@ -69,5 +71,26 @@ class VarnishServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../publishables/views/shop' => resource_path('themes/default/views'),
         ]);
+    }
+
+    /**
+     * Grant the admin routes through the configuration permission.
+     *
+     * Bagisto's Bouncer refuses an admin route that no ACL entry maps whenever the role has
+     * custom permissions, so without this such a role gets a 401 on purge and VCL export.
+     */
+    public function registerAcl(): void
+    {
+        $routes = [
+            'varnish.configuration.vcl.export',
+            'varnish.configuration.cache.purge',
+            'varnish.configuration.full.cache.purge',
+        ];
+
+        config(['acl' => collect(config('acl', []))
+            ->map(fn ($item) => ($item['key'] ?? null) === 'configuration'
+                ? array_merge($item, ['route' => array_values(array_unique([...(array) $item['route'], ...$routes]))])
+                : $item)
+            ->all()]);
     }
 }
