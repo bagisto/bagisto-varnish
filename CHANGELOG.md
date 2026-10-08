@@ -2,6 +2,10 @@
 
 This changelog consists of the bug & security fixes and new features included in the releases listed below.
 
+## **v2.2.1 (8th of October, 2026)** - *Release*
+
+* Restored the padding of the guest customer dropdown on desktop and tablet. The header overrides strip the dropdown's default padding so the signed-in menu can lay out its own, and the guest content loaded into it carried none, so its text and buttons sat flush against the edges of the box.
+
 ## **v2.2.0 (8th of October, 2026)** - *Release*
 
 * Compatibility with **Bagisto v2.5** on Laravel 13 and PHP 8.4.
